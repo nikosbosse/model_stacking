@@ -1,16 +1,12 @@
 functions {
 
-  
+  // CRPS for the model ensemble weighted by w for time t in region r
   real CRPS_pointwise(int K, vector mean_bias, matrix entropy, vector w) { 
-
-//    dim(predict_sample)=c(S, K), prediction for a fixed point y from all models
-// 	  y: real
-// 	  w: simplex weight
-// 	  mean_bias and entropy 
-  	real entropy_aggregrate = 0;
+    
+    real entropy_aggregrate = 0;
   	for (k1 in 1:K)
   		for (k2 in 1:K)
-  			entropy_aggregrate=entropy_aggregrate+entropy[k1, k2] * w[k1] * w[k2];
+  			entropy_aggregrate += entropy[k1, k2] * w[k1] * w[k2];
   			
   	return( dot_product(mean_bias, w) - 0.5 * entropy_aggregrate );
   }
@@ -30,7 +26,7 @@ data {
 transformed data {
   
   vector[K] mean_bias[T,R]; // pre-calculate array of all mean_bias values
-  matrix[S, S] entropy[T, R];
+  matrix[S, S] entropy[T, R]; // pre-calculate array of all entropy matrices
   
   vector[T] lambda; // weight different time points differently
   vector[R] gamma; // maybe weight different regions differently
@@ -39,8 +35,12 @@ transformed data {
   for (r in 1:R) {
     for (t in 1:T) {
       for (k in 1:K) {
-        // place_holder for now. 
-        mean_bias[t, r, k] = 1;
+        
+        mean_bias[t, r, k] = 0;
+        for (s in 1:S) {
+          mean_bias[t, r, k] += predict_sample_mat[t, r, s, k];
+        }
+        mean_bias[t, r, k] = mean_bias[t, r, k] / S - y[r, t];
       }
     }
   }
@@ -88,9 +88,9 @@ parameters {
 
 model {
 	for(t in 1:T)
-	  for (r in 1:R) 
-		 target += lambda[t] * 	gamma[r] * CRPS_pointwise(K, mean_bias[t,r], entropy[t,r], weights);
-	
+	  for (r in 1:R)
+		 target += lambda[t] * gamma[r] * CRPS_pointwise(K, mean_bias[t,r], entropy[t,r], weights);
+
 	weights ~ dirichlet(rep_vector(1.01, K));
   
 }
