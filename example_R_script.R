@@ -6,7 +6,18 @@ T = 100 # number of timesteps
 S = 80 # number of predictive samples
 
 # create an example array
-predict_sample_mat <- array(rnorm(K * R * T * S), c(T, R, S,K))
+predict_sample_mat <- array(NA, c(T, R, S,K))
+for (r in 1:R) {
+  for (t in 1:T) {
+    for (s in 1:S) {
+      predict_sample_mat[t, r, , ] <- cbind(rnorm(S, 1.4, 1), 
+                                        rnorm(S, 0.5, 1), 
+                                        rnorm(S, 1, 4),  
+                                        rnorm(S, 2, 2.4))
+    }
+  }
+}
+
 
 # create observed true values
 y_mat <- array(rnorm(S * R), c(R, T))
@@ -24,8 +35,4 @@ rstan::sampling(model, data = standata)
 
 
 
-rstan::optimizing(model_code = model, data = standata)
-
-
-
-?optimizing
+rstan::optimizing(model, data = standata)
