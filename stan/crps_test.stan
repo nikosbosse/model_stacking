@@ -40,7 +40,7 @@ transformed data {
         for (s in 1:S) {
           mean_bias[t, r, k] += predict_sample_mat[t, r, s, k];
         }
-        mean_bias[t, r, k] = mean_bias[t, r, k] / S - y[r, t];
+        // mean_bias[t, r, k] = mean_bias[t, r, k] / S - y[r, t];
       }
     }
   }
@@ -50,6 +50,7 @@ transformed data {
     for (t in 1:T) {
       
       // compute individual entropy matrices for one time point in one region
+      entropy[t, r] = rep_matrix(0, S, S);
       for( k1 in 1:K){
 	    	for(k2 in 1:k1)
 		    	for(s1 in 1:S)
@@ -87,6 +88,13 @@ parameters {
 
 
 model {
+  
+  // print(CRPS_pointwise(1, mean_bias[1,1], entropy[1,1], weights));
+  
+  // print(mean_bias[1,1,1]);
+  
+  // print(entropy[1,1,1,1]);
+  
 	for(t in 1:T)
 	  for (r in 1:R)
 		 target += lambda[t] * gamma[r] * CRPS_pointwise(K, mean_bias[t,r], entropy[t,r], weights);
