@@ -36,11 +36,13 @@ transformed data {
     for (t in 1:T) {
       for (k in 1:K) {
         
+        // mean bias in region r at time t for model k = average over
+        // all abs(predictive_sample_s - y)
         mean_bias[t, r, k] = 0;
         for (s in 1:S) {
           mean_bias[t, r, k] += predict_sample_mat[t, r, s, k];
         }
-        // mean_bias[t, r, k] = mean_bias[t, r, k] / S - y[r, t];
+        mean_bias[t, r, k] = fabs(mean_bias[t, r, k] / S - y[r, t]);
       }
     }
   }
@@ -58,6 +60,7 @@ transformed data {
 		    			entropy[t, r, k1, k2] = entropy[t, r, k1, k2] + 
 		    			                        1.0/S^2 * fabs( predict_sample_mat[t, r, s1, k1] - predict_sample_mat[t, r, s2, k2]);
 	    	
+	    	// maybe use 1.0/S(S-1)
 	    	for(k2 in (k1+1):K)	
 		    	entropy[t, r, k1, k2]=entropy[t, r, k2, k1];
 	    
@@ -68,37 +71,27 @@ transformed data {
 	
   // time point weights
   for (t in 1:T) {
-    lambda[t] = 1.5 - (1 - (t + 0.0) /T)^2;
+    // lambda[t] = 1.5 - (1 - (t + 0.0) /T)^2;
+    lambda[t] = 1; // try equal weights for now
   }
   
   // region weights
   for (r in 1:R) {
-    gamma[r] = 1.0 / R;
+    gamma[r] = 1.0 / R; 
   }
 }
 
 parameters {
   simplex[K] weights;
-  
-  // maybe at some later point add parameters alpha and beta. 
-  // alpha is a parameter that can correct the mean by adding a constant 
-  // value and beta is a parameter to expand or contract the predictive
-  // samples to get optimal uncertainty. 
 }
 
 
 model {
-  
-  // print(CRPS_pointwise(1, mean_bias[1,1], entropy[1,1], weights));
-  
-  // print(mean_bias[1,1,1]);
-  
-  // print(entropy[1,1,1,1]);
-  
+
 	for(t in 1:T)
 	  for (r in 1:R)
-		 target += lambda[t] * gamma[r] * CRPS_pointwise(K, mean_bias[t,r], entropy[t,r], weights);
+		 target += - lambda[t] * gamma[r] * CRPS_pointwise(K, mean_bias[t,r], entropy[t,r], weights);
 
 	weights ~ dirichlet(rep_vector(1.01, K));
   
-}
+} 
