@@ -2,7 +2,7 @@ functions {
 // CRPS for the model ensemble weighted by w for time t in region r
   real CRPS_pointwise(int K, vector mean_bias, matrix entropy, vector w) { 
          real entropy_aggregate = quad_form(entropy, w);
-  	     return( dot_product(mean_bias, w) - 0.5 * entropy_aggregrate );
+  	     return( dot_product(mean_bias, w) - 0.5 * entropy_aggregate );
   }
 }
 
