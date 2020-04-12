@@ -49,9 +49,7 @@ transformed data {
       for( k1 in 1:K){
 	    	for(k2 in 1:k1)
 		    	for(s1 in 1:S)
-	    			for(s2 in 1:S)
-		    			entropy[t, r, k1, k2] = entropy[t, r, k1, k2] + 
-		    			                        1.0/S^2 * fabs( predict_sample_mat[t, r, s1, k1] - predict_sample_mat[t, r, s2, k2]);
+		    			entropy[t, r, k1, k2] += 1.0/S^2 * sum(fabs( predict_sample_mat[t, r, s1, k1] - predict_sample_mat[t, r, 1:S, k2]));
 	    	// maybe use 1.0/S(S-1)
 	    }
 	    for( k1 in 1:(K-1) ){ 
