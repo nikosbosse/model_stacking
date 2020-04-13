@@ -2,7 +2,7 @@ library("rstan")
 stacking_opt_model <- stan_model("stan/crps_test.stan")
 
 stacking_weight = function(predict_sample, y,   K,  R, T, S,
-													 lambda=NULL, gamma=NULL, dirichlet_alpha=1){
+													 lambda=NULL, gamma=NULL, dirichlet_alpha=1.001){
 	if ( dim(predict_sample)!=c(T, R, S,K) | dim(y)!=c(R, T) ) 
 		stop("Input dimensions do not match")
 	if ( K < 2 ) 

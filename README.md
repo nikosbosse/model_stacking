@@ -25,7 +25,7 @@ The main function `stacking_weight` takes input:
   * `K`>=2: number of models;
   * `R`>=1: number of sites;
   * `T`>=1: number of days in the existing predictions;
-  * `S`>=2: number of simulation draws per prediction.
+  * `S`>=1: number of simulation draws per prediction.
 * `predict_sample`: an array with dimension (T, R, S, K). Its (t, r, s, k) element refers to the s-th simulation draws of the leave-future-out prediction for the r-th site, t-th day in the k-th model.
 * `y`: a matrix with dimension (R, T). The observed outcome on the r-th site and t-th day.
 * `lambda` (optional): a vector of length T that specifies the time-weight. The default is lambda(t)= 2 - (1 - t  /T)^2.
