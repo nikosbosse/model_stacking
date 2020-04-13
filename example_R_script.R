@@ -48,20 +48,3 @@ standata <- list(K = K,
 
 opt <- rstan::optimizing(model, data = standata,seed=20)
 opt
-
-
-
-K = 4
-
-predict_sample_mat <- array(NA, c(T, R, S,K))
-for (r in 1:R) {
-  for (t in 1:T) {
-    predict_sample_mat[t, r, , ] <- cbind(rnorm(S, 2, 1), 
-                                          rnorm(S, 0.5, 1),
-                                          rnorm(S, 1, 4),  
-                                          rnorm(S, 2, 2.4))
-  }
-}
-
-
-

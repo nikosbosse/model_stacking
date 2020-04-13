@@ -1,3 +1,6 @@
+## check that CRPS implementations are correct and give comparable results
+
+
 ## three CRPS implementations: 
 ## a) Yuling's implemenation currenly used in Stan
 ## b) implemenation in scoringRules package
