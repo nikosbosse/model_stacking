@@ -13,7 +13,12 @@
 For computation details, see 'method.pdf'.
 
 ## Usage
-Run `source ("stacking_function.R")` to load necessary functions.
+Run 
+```
+library("rstan")
+source ("stacking_function.R")
+```
+to load necessary functions.
 
 The main function `stacking_weight` takes input:
 * Dimension, must be integers 
