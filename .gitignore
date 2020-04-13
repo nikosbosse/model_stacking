@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+method.aux
+method.log
+method.out
+method.synctex.gz
