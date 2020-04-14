@@ -7,13 +7,15 @@ R = 1 # number of regions
 T = 100 # number of timesteps
 S = 200 # number of predictive samples
 ## time point weights
+lambda <- numeric(T)
 for (t in 1:T) {
 	# lambda[t] = 1.5 - (1 - (t + 0.0) /T)^2;
 	lambda[t] = 1; # try equal weights for now
 }
 ## region weights
+gamma <- array(0, R)
 for (r in 1:R) {
-	gamma[r] = 1.0 / R; 
+	gamma[r] <- 1.0 / R; 
 }
 
 # create an example array
@@ -39,10 +41,10 @@ standata <- list(K = K,
                  S = S,
                  predict_sample_mat = predict_sample_mat, 
                  y = y_mat,
-								 lambda=lambda,
-								 gamma=gamma,
-								 dirichlet_alpha=1.01
+								 lambda = lambda,
+								 gamma = gamma,
+								 dirichlet_alpha = 1.01
 								 )
 
-opt=rstan::optimizing(model, data = standata,seed=20)
-
+opt <- rstan::optimizing(model, data = standata,seed=20)
+opt
