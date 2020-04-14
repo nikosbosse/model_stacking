@@ -52,7 +52,8 @@ crps_scoringRules <- function (y, dat)
 ## make mixture model
 # input: list of predictions of equal lengths
 # mixture weights
-make_mixture_model (prediction_list, weights) {
+make_mixture_model <- function(prediction_list, weights) {
+  
   K <- length(weights) # number of models
   T <- nrow(prediction_list[[1]]) # number of time steps
   S <- ncol(prediction_list[[1]]) # number of samples
@@ -60,7 +61,6 @@ make_mixture_model (prediction_list, weights) {
   mixture_ensemble <- matrix(NA, nrow = T, ncol = K * S)
   
   for (i in 1:T) {
-    
     mixture_ensemble[t, ] <- sapply(1:(K*S), 
                                     FUN = function(x) {
                                       m <- sample(1:K, size = 1)

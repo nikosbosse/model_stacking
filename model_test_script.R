@@ -54,21 +54,24 @@ for (run in 1:n_runs) {
   # determine optimal weights, create an ensemble accordingly and score
   opt <- rstan::optimizing(model, data = standata,seed=20)
   
-  ensemble_forecast <- 
-    (opt$par[1] * (pred1 %>% dplyr::select(-c(region, date, model))) +
-       opt$par[2] * (pred2 %>% dplyr::select(-c(region, date, model)))) %>%
-    as.matrix()
   
+  prediction_list <- 
+    list(pred1 %>% dplyr::select(-c(region, date, model)) %>% as.matrix(), 
+         pred2 %>% dplyr::select(-c(region, date, model)) %>% as.matrix())
+
+  ensemble_forecast <- make_mixture_model(prediction_list, 
+                                          weights = c(opt$par[1], opt$par[2]))
+    
   crps_optim <- crps_scoringRules(y_true, ensemble_forecast) %>% mean()
   
   # maually run several differently weigted ensembles and check their CRPS
   crps_test <- numeric(101)
   p <- seq(0, 1, 0.01)
   for (i in 1:101) {
-    test_ensemble <- 
-      (p[i] * (pred1 %>% dplyr::select(-c(region, date, model))) +
-         (1 - p[i]) * (pred2 %>% dplyr::select(-c(region, date, model)))) %>%
-      as.matrix()
+    weights <- c(p, 1-p)
+    
+    test_ensemble <- make_mixture_model(prediction_list, 
+                                        weights = weights)
     
     crps_test[i] <- (crps_scoringrules(y_true, test_ensemble) %>% mean())
   }
