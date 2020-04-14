@@ -60,17 +60,17 @@ crps_single <- function(true_value, predictive_samples) {
   return(crps)
 }
 
-
-
-seed = 1
-
-y = 3
-predictive_sample = rnorm(1000)
-predictive_sample2=rnorm(1000)
-p <- cbind(predictive_sample, predictive_sample2) ##  generate two copies but not identical
-CRPS_pointwise(y, predict_sample = p, c(0.5, 0.5))
-CRPS_pointwise(y, predict_sample = p, c(1, 0))
-crps_scoringRules(y, predictive_sample)
-crps_single(y, predictive_sample)
-crps_single(y, predictive_sample2)
- 
+# 
+# 
+# seed = 1
+# 
+# y = 3
+# predictive_sample = rnorm(1000)
+# predictive_sample2=rnorm(1000)
+# p <- cbind(predictive_sample, predictive_sample2) ##  generate two copies but not identical
+# CRPS_pointwise(y, predict_sample = p, c(0.5, 0.5))
+# CRPS_pointwise(y, predict_sample = p, c(1, 0))
+# crps_scoringRules(y, predictive_sample)
+# crps_single(y, predictive_sample)
+# crps_single(y, predictive_sample2)
+# 
