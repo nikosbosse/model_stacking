@@ -37,8 +37,6 @@ create_array <- function(predictions) {
 
 
 
-
-
 ## (from scoringRules::crps_sample)
 crps_scoringRules <- function (y, dat) 
 {
@@ -48,3 +46,30 @@ crps_scoringRules <- function (y, dat)
   f <- function(s) 2 * c_1n * sum(((s < x) - a) * (x - s))
   sapply(y, f)
 }
+
+
+
+## make mixture model
+# input: list of predictions of equal lengths
+# mixture weights
+make_mixture_model (prediction_list, weights) {
+  K <- length(weights) # number of models
+  T <- nrow(prediction_list[[1]]) # number of time steps
+  S <- ncol(prediction_list[[1]]) # number of samples
+  
+  mixture_ensemble <- matrix(NA, nrow = T, ncol = K * S)
+  
+  for (i in 1:T) {
+    
+    mixture_ensemble[t, ] <- sapply(1:(K*S), 
+                                    FUN = function(x) {
+                                      m <- sample(1:K, size = 1)
+                                      draw <- prediction_list[[m]][t, ] %>%
+                                        sample(size = 1) %>% 
+                                        as.numeric()
+                                      return(draw)
+                                    }, simplify = T)
+  }  
+  return(mixture_ensemble)
+}
+
