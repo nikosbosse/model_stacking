@@ -1,5 +1,5 @@
 library("rstan")
-stacking_opt_model <- stan_model("stan/crps_test.stan")
+stacking_opt_model <- stan_model("../stan/crps_test.stan")
 
 stacking_weight = function(predict_sample, y,   K,  R, T, S,
 													 lambda=NULL, gamma=NULL, dirichlet_alpha=1.001){
